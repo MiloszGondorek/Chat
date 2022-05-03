@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.chat.controllers.UserController">
+   <Label fx:id="Message1" text="1" prefWidth="Infinity"/>
+   <Label fx:id="Message2" text="2" prefWidth="Infinity"/>
+   <Label fx:id="Message3" text="3" prefWidth="Infinity"/>
+   <Label fx:id="Message4" text="4" prefWidth="Infinity"/>
+   <TextField fx:id="userInputMessage" prefWidth="Infinity" />
+   <Button onAction="#send" text="Wyslij" prefWidth="Infinity" />
+
+   <!-- <Button text="Join server" onAction="#joinServer"/>-->
+</VBox>
