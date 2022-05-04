@@ -27,4 +27,8 @@ public class ServerController {
         server.DisableServer();
         new ChangeScene((Stage) disconnect.getScene().getWindow(),0);
     }
+
+    public void ShowUsers(ActionEvent actionEvent) {
+        server.ShowUsers();
+    }
 }

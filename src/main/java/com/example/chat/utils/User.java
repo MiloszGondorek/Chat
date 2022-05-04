@@ -17,14 +17,13 @@ public class User {
             send.start();
             get.start();
         } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+            System.out.println("User: "+exception);
         }
     }
 
     class sendMessage extends Thread {
         boolean shouldRun=true;
-        private void sending() throws IOException {
-            System.out.println("Uzytkownik");
+        private void sending() throws IOException, InterruptedException {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             while (shouldRun) {
                 if (!sendingMessage.equals("")) {
@@ -33,6 +32,7 @@ public class User {
                     outputStream.flush();
                     sendingMessage = "";
                 }
+                sleep(100);
             }
         }
 
@@ -80,7 +80,7 @@ public class User {
             try {
                 getting();
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println("Getting error");
             }
         }
 
@@ -105,6 +105,7 @@ public class User {
             outputStream.writeUTF("");
             outputStream.writeBoolean(true);
             outputStream.flush();
+
         } catch (Exception e) {
             System.out.println(e);
         }

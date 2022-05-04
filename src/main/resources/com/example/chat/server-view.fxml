@@ -10,4 +10,5 @@
       fx:controller="com.example.chat.controllers.ServerController">
     <Button onAction="#DisconnectAllUsers" fx:id="disconnect" text="Disconnect all users"/>
     <Button onAction="#DisableServer" text="Disable Server"/>
+    <Button onAction="#ShowUsers" text="Show users"/>
 </HBox>

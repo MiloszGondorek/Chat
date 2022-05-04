@@ -17,7 +17,7 @@ public class UserController {
     public TextField userInputMessage;
     @FXML
     public Label Message1, Message2, Message3, Message4;
-    private final User user;
+    private User user;
 
     public UserController() {
         user = new User();
@@ -31,13 +31,14 @@ public class UserController {
 
     public void disconnect(ActionEvent actionEvent) throws IOException {
         user.disconnect();
+        user=null;
         new ChangeScene((Stage) userInputMessage.getScene().getWindow(),0);
     }
 
     private class gettingMessage extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (user!=null) {
                 try {
                     String[] messages = user.getMessages();
                     if (Message1 != null) {
@@ -47,10 +48,11 @@ public class UserController {
                             Message3.setText(messages[1]);
                             Message4.setText(messages[0]);
                         });
-                        sleep(300);
                     }
+                    sleep(300);
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println("gettingMessage: "+e);
+                    break;
                 }
             }
         }

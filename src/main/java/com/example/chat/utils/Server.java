@@ -10,7 +10,6 @@ public class Server {
     ServerSocket serverSocket;
     List<Socket> users = new ArrayList<>();
     int u_size = 0;
-
     boolean nobodyConnectedYet = true;
 
     public Server() {
@@ -109,7 +108,6 @@ public class Server {
         }
     }
 
-
     public void RemoveAllUsers() {
         for (Socket userToDisconnect : users) {
             try {
@@ -128,6 +126,12 @@ public class Server {
             serverSocket.close();
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+
+    public void ShowUsers(){
+        for(Socket user:users){
+            System.out.println(users);
         }
     }
 }
