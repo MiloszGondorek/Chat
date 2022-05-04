@@ -8,4 +8,6 @@
 
 <HBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.chat.controllers.ServerController">
+    <Button onAction="#DisconnectAllUsers" fx:id="disconnect" text="Disconnect all users"/>
+    <Button onAction="#DisableServer" text="Disable Server"/>
 </HBox>

@@ -15,16 +15,12 @@ public class MenuController {
 
     @FXML
     private Button server_button;
-    public void startServer(ActionEvent actionEvent) throws IOException, InterruptedException {
-        URL url = getClass().getResource("/com/example/chat/server-view.fxml");
-        ChangeScene changeScene=new ChangeScene();
-        changeScene.start();
-        changeScene.changeScene(url,(Stage) server_button.getScene().getWindow(),"Server");
+
+    public void startServer(ActionEvent actionEvent) throws IOException {
+        new ChangeScene((Stage) server_button.getScene().getWindow(), 1);
     }
-    public void joinServer(ActionEvent actionEvent) throws IOException, InterruptedException  {
-        URL url = getClass().getResource("/com/example/chat/user-view.fxml");
-        ChangeScene changeScene=new ChangeScene();
-        changeScene.start();
-        changeScene.changeScene(url,(Stage) server_button.getScene().getWindow(),"Client");
+
+    public void joinServer(ActionEvent actionEvent) throws IOException {
+        new ChangeScene((Stage) server_button.getScene().getWindow(), 2);
     }
 }

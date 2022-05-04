@@ -6,7 +6,7 @@ import java.net.Socket;
 public class User {
     Socket socket;
     String sendingMessage = "";
-    private String[] messages={"","","",""};
+    private String[] messages = {"", "", "", ""};
 
     public User() {
         try {
@@ -20,15 +20,17 @@ public class User {
 
     class sendMessage extends Thread {
         private void sending() throws IOException {
-
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-            while (!sendingMessage.equals("exit")) {
+            while (true) {
                 if (!sendingMessage.equals("")) {
                     outputStream.writeUTF(sendingMessage);
                     outputStream.flush();
+                    if(sendingMessage.equals("exit"))
+                        break;
                     sendingMessage = "";
                 }
             }
+            disconnect();
         }
 
         @Override
@@ -36,20 +38,32 @@ public class User {
             try {
                 sending();
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println("Sending error");
             }
         }
     }
 
     class getMessage extends Thread {
-        private void getting() throws IOException {
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+        private void getting() throws IOException, InterruptedException {
             while (true) {
-                String message = inputStream.readUTF();
-                messages[3]=messages[2];
-                messages[2]=messages[1];
-                messages[1]=messages[0];
-                messages[0]=message;
+                try {
+                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+                    String message = inputStream.readUTF();
+                    System.out.println(message);
+                    messages[3] = messages[2];
+                    messages[2] = messages[1];
+                    messages[1] = messages[0];
+                    messages[0] = message;
+
+                } catch (Exception e) {
+                    messages[3] = messages[2];
+                    messages[2] = messages[1];
+                    messages[1] = messages[0];
+                    messages[0] = "Zostales rozlaczony";
+                    break;
+                }
+
+                sleep(100);
             }
         }
 
@@ -67,7 +81,12 @@ public class User {
         sendingMessage = message;
     }
 
-    public String[] getMessages(){
+    public String[] getMessages() {
         return messages;
     }
+
+    public void disconnect() throws IOException {
+        socket.close();
+    }
+
 }

@@ -1,11 +1,15 @@
 package com.example.chat.controllers;
 
+import com.example.chat.utils.ChangeScene;
 import com.example.chat.utils.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class UserController {
 
@@ -23,6 +27,11 @@ public class UserController {
     public void send(ActionEvent actionEvent) {
         user.setSendingMessage(userInputMessage.getText());
         userInputMessage.setText("");
+    }
+
+    public void disconnect(ActionEvent actionEvent) throws IOException {
+        user.disconnect();
+        new ChangeScene((Stage) userInputMessage.getScene().getWindow(),0);
     }
 
     private class gettingMessage extends Thread {

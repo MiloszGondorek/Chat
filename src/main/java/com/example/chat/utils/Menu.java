@@ -9,8 +9,7 @@ import java.net.URL;
 public class Menu extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        URL url = Menu.class.getResource("/com/example/chat/menu-view.fxml");
-        new ChangeScene().changeScene(url, stage, "Menu");
+        new ChangeScene(stage, 0);
         stage.show();
     }
 

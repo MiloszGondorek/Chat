@@ -11,18 +11,23 @@ public class Server {
     List<Socket> users = new ArrayList<>();
     int u_size = 0;
 
+    boolean nobodyConnectedYet = true;
+
     public Server() {
         System.out.println("Utworzono serwer");
-        new ListenToUsers().start();
+        new ListenToUsersConnect().start();
         new ReadUsers().start();
     }
 
-    class ListenToUsers extends Thread {
+    class ListenToUsersConnect extends Thread {
         private void listen() throws InterruptedException {
             try {
                 serverSocket = new ServerSocket(2234);
                 while (true) {
-                    new ServerThread(serverSocket.accept()).start();
+                    try {
+                        new AddUserToServer(serverSocket.accept());
+                        sleep(100);
+                    }catch (Exception e){break;}
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -39,10 +44,10 @@ public class Server {
         }
     }
 
-    class ServerThread extends Thread {
+    class AddUserToServer {
         Socket socket;
 
-        public ServerThread(Socket socket) {
+        public AddUserToServer(Socket socket) {
             this.socket = socket;
             System.out.println("Ktos sie polaczyl");
             users.add(socket);
@@ -52,34 +57,24 @@ public class Server {
             System.out.println("-----------------");
             u_size++;
         }
-
-        void server() throws IOException, InterruptedException {
-        }
-
-        @Override
-        public void run() {
-            try {
-                server();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     class ReadUsers extends Thread {
-        boolean nobodyConnectedYet = true;
-
         @Override
         public void run() {
             do {
                 try {
-                    sleep(400);
+                    sleep(300);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 for (Socket user : users) {
                     nobodyConnectedYet = false;
                     try {
+                        if(!user.isConnected()){
+                            users.remove(user);
+                            break;
+                        }
                         DataInputStream inputStream = new DataInputStream(user.getInputStream());
                         if (inputStream.available() != 0) {
                             String message = inputStream.readUTF();
@@ -101,6 +96,29 @@ public class Server {
                 }
             } while (nobodyConnectedYet || users.size() > 0);
             System.out.println("Wylaczam server");
+            DisableServer();
+        }
+    }
+    
+
+    public void RemoveAllUsers() {
+        for (Socket userToDisconnect : users) {
+            try {
+                userToDisconnect.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        nobodyConnectedYet = true;
+        users = new ArrayList<>();
+    }
+
+    public void DisableServer() {
+        RemoveAllUsers();
+        try {
+            serverSocket.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }
