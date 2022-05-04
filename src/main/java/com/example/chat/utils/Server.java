@@ -43,7 +43,6 @@ public class Server {
             }
         }
     }
-
     class AddUserToServer {
         Socket socket;
 
@@ -78,6 +77,16 @@ public class Server {
                         DataInputStream inputStream = new DataInputStream(user.getInputStream());
                         if (inputStream.available() != 0) {
                             String message = inputStream.readUTF();
+                            System.out.println(message);
+                            for(Socket wuser:users){
+                                System.out.println("USER: "+wuser);
+                            }
+                            boolean disconnect =inputStream.readBoolean();
+                            if(disconnect){
+                                user.close();
+                                users.remove(user);
+                                break;
+                            }
                             if (!message.equals("")) {
                                 for (Socket userToSend : users) {
                                     DataOutputStream outputStream = new DataOutputStream(userToSend.getOutputStream());
@@ -99,7 +108,7 @@ public class Server {
             DisableServer();
         }
     }
-    
+
 
     public void RemoveAllUsers() {
         for (Socket userToDisconnect : users) {

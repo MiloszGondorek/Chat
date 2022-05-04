@@ -7,30 +7,33 @@ public class User {
     Socket socket;
     String sendingMessage = "";
     private String[] messages = {"", "", "", ""};
-
+    sendMessage send;
+    getMessage get;
     public User() {
         try {
             socket = new Socket("localhost", 2234);
-            new sendMessage().start();
-            new getMessage().start();
+            send=new sendMessage();
+            get=new getMessage();
+            send.start();
+            get.start();
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
     }
 
     class sendMessage extends Thread {
+        boolean shouldRun=true;
         private void sending() throws IOException {
+            System.out.println("Uzytkownik");
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-            while (true) {
+            while (shouldRun) {
                 if (!sendingMessage.equals("")) {
                     outputStream.writeUTF(sendingMessage);
+                    outputStream.writeBoolean(false);
                     outputStream.flush();
-                    if(sendingMessage.equals("exit"))
-                        break;
                     sendingMessage = "";
                 }
             }
-            disconnect();
         }
 
         @Override
@@ -41,11 +44,16 @@ public class User {
                 System.out.println("Sending error");
             }
         }
+
+        public void stopThread(){
+            shouldRun=false;
+        }
     }
 
     class getMessage extends Thread {
+    boolean shouldRun=true;
         private void getting() throws IOException, InterruptedException {
-            while (true) {
+            while (shouldRun) {
                 try {
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                     String message = inputStream.readUTF();
@@ -75,6 +83,10 @@ public class User {
                 System.out.println(e);
             }
         }
+
+        public void stopThread(){
+            shouldRun=false;
+        }
     }
 
     public void setSendingMessage(String message) {
@@ -85,8 +97,18 @@ public class User {
         return messages;
     }
 
-    public void disconnect() throws IOException {
-        socket.close();
+    public void disconnect() {
+        try {
+            send.stopThread();
+            get.stopThread();
+            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+            outputStream.writeUTF("");
+            outputStream.writeBoolean(true);
+            outputStream.flush();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
 }
